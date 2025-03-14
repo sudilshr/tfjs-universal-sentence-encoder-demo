@@ -1,129 +1,61 @@
-
-<!-- Copyright 2019 Google LLC. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-==============================================================================-->
 <!DOCTYPE html>
-<html>
+<html class="uk-theme-zinc uk-radii-md uk-shadows-sm uk-font-sm">
 
 <head>
   <title>TensorFlow.js Universal Sentence Encoder lite demo</title>
-  <style>
-    h1 {
-      margin-bottom: 35px;
-    }
-
-    #main {
-      padding-top: 30px;
-      font-family: Helvetica, sans-serif;
-      max-width: 960px;
-      min-width: 600px;
-      width: 60vw;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #sentences-container {
-      flex: 1 1 auto;
-    }
-
-    #sentences-container>div {
-      margin-bottom: 10px;
-    }
-
-    #container {
-      display: flex;
-      flex-direction: row;
-    }
-
-    #self-similarity-matrix {
-      position: relative;
-    }
-
-    .labels {
-      position: absolute;
-    }
-
-    .x-axis {
-      bottom: 100%;
-      width: 100%;
-      height: 20px;
-    }
-
-    .x-axis>div {
-      transform: translateX(-50%);
-    }
-
-    .y-axis {
-      right: 100%;
-      height: 100%;
-      width: 20px;
-    }
-
-    .y-axis>div {
-      transform: translateY(-50%);
-    }
-
-    .labels>div {
-      position: absolute;
-    }
-
-    #description {
-      margin-bottom: 50px;
-      line-height: 1.6;
-    }
-  </style>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Franken UI (design based on shadcn/ui) -->
+  <link rel="stylesheet" href="https://unpkg.com/franken-ui@2.0.0/dist/css/core.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/franken-ui@2.0.0/dist/css/utilities.min.css" />
+  <script src="https://unpkg.com/franken-ui@2.0.0/dist/js/core.iife.js" type="module"></script>
+  <script src="https://unpkg.com/franken-ui@2.0.0/dist/js/icon.iife.js" type="module"></script>
 </head>
 
-<body>
-  <div id='main'>
-    <h1>Universal Sentence Encoder lite demo</h1>
-    <div id="description">This demo is taken from the <a target="_blank"
-        href="https://colab.sandbox.google.com/github/tensorflow/hub/blob/master/examples/colab/semantic_similarity_with_tf_hub_universal_encoder_lite.ipynb#scrollTo=_GSCW5QIBKVe">TensorFlow
-        Hub Universal Sentence Encoder lite colab</a>. It shows the model's ability to group sentences by semantic
-      similarity usings their embeddings. The matrix on the right shows self-similarity scores (dot products) between
-      the embeddings for the sentences on the left. The redder the cell, the higher the similarity score.</div>
-    <div id="loading">
-      Loading the model...
-    </div>
-    <div id="container">
-      <div id="sentences-container"></div>
-      <div id="self-similarity-matrix">
-        <div class="labels y-axis"></div>
-        <div class="labels x-axis"></div>
-        <canvas></canvas>
+<body class="bg-background font-geist-sans text-sm text-foreground">
+  <div style="display: contents">
+    <div class="hidden h-screen flex-col xl:flex">
+      <div class="flex h-16 flex-col items-start border-b border-border px-8 py-4">
+        <h2 class="text-lg font-semibold">
+          Universal Sentence Encoder lite demo
+        </h2>
+
       </div>
-    </div>
-  </div>
-  <div id='main'>
-    <h1>Universal Sentence Encoder QnA demo</h1>
-    <div id="loadingQnA">
-      Loading the model...
-    </div>
-    <div id="description">
-      <h2>Encode Question and Answers</h2>
-      <h3>Question</h3>
-      <div>How are you feeling today?</div><br />
-      <h3>Answer 1</h3>
-      <div>I'm not feeling very well.</div>
-      <div>Score: <span id="answer_1"></span></div><br />
-      <h3>Answer 2</h3>
-      <div>Beijing is the capital of China.</div>
-      <div>Score: <span id="answer_2"></span></div><br />
-      <h3>Answer 3</h3>
-      <div>You have five fingers on your hand.</div>
-      <div>Score: <span id="answer_3"></span></div><br />
+      <div class="flex flex-1 gap-x-6 px-8 py-6">
+        <div class="flex flex-1 flex-col justify-start">
+          <div class="text-sm text-muted-foreground">
+            Try out the TensorFlow.js Universal Sentence Encoder lite model in
+            the browser to encode sentences into embeddings and compare their
+            similarity.
+            <ul class="uk-list uk-list-disc">
+              <li><a href="https://github.com/tensorflow/tfjs-models/tree/master/universal-sentence-encoder"
+                  target="_blank" class="uk-link-muted">https://github.com/tensorflow/tfjs-models/tree/master/universal-sentence-encode</a>
+              </li>
+              <li><a href="https://tfhub.dev/google/universal-sentence-encoder-lite/2" target="_blank"
+                  class="uk-link-muted">https://tfhub.dev/google/universal-sentence-encoder-lite/2</a></li>
+            </ul>
+          </div>
+          <div class="my-6 flex gap-x-4">
+            <textarea class="uk-textarea h-full resize-none p-4" rows="6"
+              placeholder="Sentence 1">I love dogs</textarea>
+            <textarea class="uk-textarea h-full resize-none p-4" rows="6"
+              placeholder="Sentence 2">I love cats</textarea>
+
+          </div>
+          <div class="my-6 flex gap-x-2">
+            <div id="similarity" class="mt-4 flex items-center gap-x-2">
+              <span class="uk-text-lead uk-text-primary ">Similarity: </span>
+              <span id="similarity-value" class="uk-hero-xl">N/A</span>
+            </div>
+          </div>
+          <div class="my-6 flex gap-x-2">
+            <button id="check-similarity-btn" class="uk-btn uk-btn-primary flex gap-2">
+              <span>Check similarity</span>
+              <span id="loading-spinner" data-uk-spinner="ratio: 0.5" class="hidden"></span>
+            </button>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
   <script src="index.js"></script>
