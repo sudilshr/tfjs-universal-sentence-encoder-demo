@@ -22,7 +22,8 @@
       "build-deps": "yarn build-model && yarn build",
       "build-model": "cd .. && yarn && yarn build-npm",
       "lint": "eslint .",
-      "link-local": "yalc link @tensorflow-models/universal-sentence-encoder"
+      "link-local": "yalc link @tensorflow-models/universal-sentence-encoder",
+      "deploy": "gh-pages -d dist"
     },
     "browser": {
       "crypto": false
@@ -39,7 +40,8 @@
       "eslint": "^4.19.1",
       "eslint-config-google": "^0.9.1",
       "parcel-bundler": "~1.12.5",
-      "yalc": "~1.0.0-pre.50"
+      "yalc": "~1.0.0-pre.50",
+      "gh-pages": "^3.2.3"
     },
     "resolutions": {
       "is-svg": "4.3.1"
